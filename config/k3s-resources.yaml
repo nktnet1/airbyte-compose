@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: airbyte-admin
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: airbyte-admin-role
+  namespace: default
+rules:
+  - apiGroups: ["*"]
+    resources:
+      - configmaps
+      - endpoints
+      - jobs
+      - pods
+      - pods/log
+      - pods/exec
+      - pods/attach
+      - secrets
+    verbs: [get, list, watch, create, update, patch, delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: airbyte-admin-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: airbyte-admin-role
+subjects:
+  - kind: ServiceAccount
+    name: airbyte-admin
+    namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-db-svc
+  namespace: default
+spec:
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-db-svc-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-db-svc
+addressType: IPv4
+ports:
+  - name: postgresql
+    protocol: TCP
+    port: 5432
+endpoints:
+  - addresses: ["__DB_IP__"]
+    conditions:
+      ready: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-minio-svc
+  namespace: default
+spec:
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-minio-svc-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-minio-svc
+addressType: IPv4
+ports:
+  - name: api
+    protocol: TCP
+    port: 9000
+endpoints:
+  - addresses: ["__MINIO_IP__"]
+    conditions:
+      ready: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-temporal
+  namespace: default
+spec:
+  ports:
+    - name: grpc
+      port: 7233
+      targetPort: 7233
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-temporal-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-temporal
+addressType: IPv4
+ports:
+  - name: grpc
+    protocol: TCP
+    port: 7233
+endpoints:
+  - addresses: ["__TEMPORAL_IP__"]
+    conditions:
+      ready: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-airbyte-server-svc
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-airbyte-server-svc-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-airbyte-server-svc
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 8001
+endpoints:
+  - addresses: ["__SERVER_IP__"]
+    conditions:
+      ready: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-workload-api-server-svc
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 8007
+      targetPort: 8007
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-workload-api-server-svc-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-workload-api-server-svc
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 8007
+endpoints:
+  - addresses: ["__WORKLOAD_API_IP__"]
+    conditions:
+      ready: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbyte-airbyte-manifest-server-svc
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: airbyte-airbyte-manifest-server-svc-compose
+  namespace: default
+  labels:
+    kubernetes.io/service-name: airbyte-airbyte-manifest-server-svc
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+endpoints:
+  - addresses: ["__MANIFEST_SERVER_IP__"]
+    conditions:
+      ready: true
