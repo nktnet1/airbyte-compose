@@ -55,7 +55,6 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_DB_IP}
         aliases:
           - airbyte-db-svc.default
           - airbyte-db-svc.default.svc.cluster.local
@@ -71,7 +70,6 @@ services:
       - minio-data:/storage
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_MINIO_IP}
         aliases:
           - airbyte-minio-svc.default
           - airbyte-minio-svc.default.svc.cluster.local
@@ -117,7 +115,6 @@ services:
         condition: service_healthy
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_TEMPORAL_IP}
         aliases:
           - airbyte-temporal
     restart: unless-stopped
@@ -171,12 +168,6 @@ services:
     image: rancher/k3s:${K3S_VERSION}
     entrypoint: [/bin/sh, /scripts/bootstrap-k3s.sh]
     environment:
-      AIRBYTE_DB_IP: ${AIRBYTE_DB_IP}
-      AIRBYTE_MINIO_IP: ${AIRBYTE_MINIO_IP}
-      AIRBYTE_TEMPORAL_IP: ${AIRBYTE_TEMPORAL_IP}
-      AIRBYTE_SERVER_IP: ${AIRBYTE_SERVER_IP}
-      AIRBYTE_WORKLOAD_API_IP: ${AIRBYTE_WORKLOAD_API_IP}
-      AIRBYTE_MANIFEST_SERVER_IP: ${AIRBYTE_MANIFEST_SERVER_IP}
       AIRBYTE_K3S_IP: ${AIRBYTE_K3S_IP}
       AIRBYTE_ADMIN_PASSWORD: ${AIRBYTE_ADMIN_PASSWORD}
       AIRBYTE_ADMIN_CLIENT_ID: ${AIRBYTE_ADMIN_CLIENT_ID}
@@ -264,7 +255,6 @@ services:
         condition: service_started
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_SERVER_IP}
         aliases:
           - airbyte-airbyte-server-svc.default
           - airbyte-airbyte-server-svc.default.svc.cluster.local
@@ -282,7 +272,6 @@ services:
         condition: service_completed_successfully
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_MANIFEST_SERVER_IP}
         aliases:
           - airbyte-airbyte-manifest-server-svc.default
           - airbyte-airbyte-manifest-server-svc.default.svc.cluster.local
@@ -302,7 +291,6 @@ services:
         condition: service_started
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_WORKLOAD_API_IP}
         aliases:
           - airbyte-workload-api-server-svc.default
           - airbyte-workload-api-server-svc.default.svc.cluster.local
@@ -322,7 +310,6 @@ services:
         condition: service_started
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_WORKER_IP}
 
   cron:
     <<: *airbyte-service
@@ -339,7 +326,6 @@ services:
         condition: service_started
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_CRON_IP}
 
   workload-launcher:
     <<: *airbyte-service
@@ -369,7 +355,6 @@ services:
         condition: service_started
     networks:
       airbyte:
-        ipv4_address: ${AIRBYTE_WORKLOAD_LAUNCHER_IP}
 
   external_postgres_for_airbyte_test:
     image: postgres:18
