@@ -126,9 +126,12 @@ services:
     image: rancher/k3s:${K3S_VERSION}
     command:
       - server
+      - --node-name=airbyte-k3s
+      - --node-ip=${AIRBYTE_K3S_IP}
       - --disable=traefik
       - --disable=servicelb
       - --disable=metrics-server
+      - --disable=coredns
       - --tls-san=k3s
     privileged: true
     environment:
@@ -151,6 +154,19 @@ services:
         ipv4_address: ${AIRBYTE_K3S_IP}
     restart: unless-stopped
 
+  docker-dns:
+    image: rancher/mirrored-coredns-coredns:${COREDNS_VERSION}
+    command: [-conf, /etc/coredns/Corefile]
+    environment:
+      AIRBYTE_K3S_IP: ${AIRBYTE_K3S_IP}
+    volumes:
+      - ./config/docker-dns.Corefile:/etc/coredns/Corefile:ro
+    network_mode: service:k3s
+    depends_on:
+      k3s:
+        condition: service_started
+    restart: unless-stopped
+
   k3s-bootstrap:
     image: rancher/k3s:${K3S_VERSION}
     entrypoint: [/bin/sh, /scripts/bootstrap-k3s.sh]
@@ -161,6 +177,7 @@ services:
       AIRBYTE_SERVER_IP: ${AIRBYTE_SERVER_IP}
       AIRBYTE_WORKLOAD_API_IP: ${AIRBYTE_WORKLOAD_API_IP}
       AIRBYTE_MANIFEST_SERVER_IP: ${AIRBYTE_MANIFEST_SERVER_IP}
+      AIRBYTE_K3S_IP: ${AIRBYTE_K3S_IP}
       AIRBYTE_ADMIN_PASSWORD: ${AIRBYTE_ADMIN_PASSWORD}
       AIRBYTE_ADMIN_CLIENT_ID: ${AIRBYTE_ADMIN_CLIENT_ID}
       AIRBYTE_ADMIN_CLIENT_SECRET: ${AIRBYTE_ADMIN_CLIENT_SECRET}
@@ -176,6 +193,8 @@ services:
     depends_on:
       k3s:
         condition: service_healthy
+      docker-dns:
+        condition: service_started
     networks:
       - airbyte
     restart: on-failure
