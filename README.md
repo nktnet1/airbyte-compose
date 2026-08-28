@@ -24,7 +24,7 @@ can still be achieved.
     ```sh
     cp .env.example .env
     ```
-    
+
     Change all password fields stubbed with the value `CHANGE_ME`
 
 3. Start all services:
@@ -35,7 +35,6 @@ can still be achieved.
 
 4. Visit http://127.0.0.1:8000 and set up your account. You can then log in
    with the `AIRBYTE_ADMIN_PASSWORD` specified in the `.env` file.
-
 
 ## Relevant discussions
 
