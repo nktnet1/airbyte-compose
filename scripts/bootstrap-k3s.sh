@@ -1,5 +1,4 @@
 #!/bin/sh
-
 set -eu
 
 source_config=/kube/kubeconfig.yaml
@@ -9,7 +8,7 @@ until [ -s "$source_config" ]; do
   sleep 1
 done
 
-sed 's#server: https://127.0.0.1:6443#server: https://k3s:6443#' \
+sed 's|server: https://127.0.0.1:6443|server: https://k3s:6443|' \
   "$source_config" > "$client_config"
 chmod 0644 "$client_config"
 
@@ -21,15 +20,13 @@ until /bin/kubectl --kubeconfig "$client_config" get --raw=/readyz >/dev/null 2>
 done
 
 sed \
-  -e "s#__DB_IP__#${AIRBYTE_DB_IP}#g" \
-  -e "s#__MINIO_IP__#${AIRBYTE_MINIO_IP}#g" \
-  -e "s#__TEMPORAL_IP__#${AIRBYTE_TEMPORAL_IP}#g" \
-  -e "s#__SERVER_IP__#${AIRBYTE_SERVER_IP}#g" \
-  -e "s#__WORKLOAD_API_IP__#${AIRBYTE_WORKLOAD_API_IP}#g" \
-  -e "s#__MANIFEST_SERVER_IP__#${AIRBYTE_MANIFEST_SERVER_IP}#g" \
+  -e "s|__AIRBYTE_K3S_IP__|${AIRBYTE_K3S_IP}|g" \
   /config/k3s-resources.yaml > /tmp/k3s-resources.yaml
 
 /bin/kubectl --kubeconfig "$client_config" apply -f /tmp/k3s-resources.yaml
+
+/bin/kubectl --kubeconfig "$client_config" \
+  --namespace kube-system rollout status deployment/coredns --timeout=180s
 
 /bin/kubectl --kubeconfig "$client_config" create secret generic airbyte-auth-secrets \
   --namespace default \
