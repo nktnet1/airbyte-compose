@@ -352,6 +352,27 @@ services:
       airbyte:
         ipv4_address: ${AIRBYTE_WORKLOAD_LAUNCHER_IP}
 
+  external_postgres_for_airbyte_test:
+    image: postgres:18
+    container_name: external_postgres_for_airbyte_test
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    volumes:
+      - external-postgres-data:/var/lib/postgresql
+    networks:
+      - airbyte
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+
 networks:
   airbyte:
     driver: bridge
@@ -365,3 +386,4 @@ volumes:
   k3s-data:
   k3s-kubeconfig:
   dataplane-credentials:
+  external-postgres-data:
