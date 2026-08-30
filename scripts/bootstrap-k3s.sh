@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -eu
 
 source_config=/kube/kubeconfig.yaml
