@@ -36,7 +36,14 @@ can still be achieved.
 4. Visit http://127.0.0.1:8000 and set up your account. You can then log in
    with the `AIRBYTE_ADMIN_PASSWORD` specified in the `.env` file.
 
-## Relevant discussions
+## References
+
+### Templates
+
+- Coolify: https://github.com/coollabsio/coolify/pull/11568
+- Dokploy: https://github.com/Dokploy/templates/pull/1125
+
+### Discussions & Requests
 
 - Airbyte Deprecation: https://github.com/airbytehq/airbyte/discussions/40599
 - Coolify Request: https://github.com/coollabsio/coolify/discussions/2421
