@@ -48,7 +48,7 @@ docker compose down --volumes
 - The UI and API are bound to `127.0.0.1` only. Change the `server.ports` entry if remote access is intentional, and put a TLS reverse proxy in front of Airbyte.
 - `.env` contains the settings normally changed by an operator. `config/airbyte.env` contains chart-derived non-secret application settings.
 - The standard connector-definition update job remains enabled. The separate declarative-source image updater is disabled because its anonymous Docker Hub tag request can be rejected with HTTP 403; set `RUN_DECLARATIVE_SOURCES_UPDATER=true` only when that API is accessible from the cron container.
-- The fixed `172.30.0.0/24` bridge is required so Kubernetes connector pods can reach the Compose control-plane containers. If it conflicts with an existing network, change `AIRBYTE_COMPOSE_SUBNET` and all `AIRBYTE_*_IP` values together.
+- Kubernetes CoreDNS forwards unresolved names to a DNS relay sharing the K3s container's Docker network namespace, so connector pods can resolve Compose services without a fixed Docker subnet.
 - PostgreSQL and MinIO data use named volumes. Connector workload pods use K3s/containerd and are removed by Airbyte when jobs finish.
 - Airbyte, Temporal, MinIO, manifest-server, and K3s versions are explicit tags in `.env`; no digest or floating `latest` tag is used.
 - Authentication cookies are set for local HTTP (`AB_COOKIE_SECURE=false`). Enable secure cookies when serving the site through HTTPS.

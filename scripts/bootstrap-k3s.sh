@@ -20,11 +20,7 @@ until /bin/kubectl --kubeconfig "$client_config" get --raw=/readyz >/dev/null 2>
   sleep 2
 done
 
-sed \
-  -e "s|__AIRBYTE_K3S_IP__|${AIRBYTE_K3S_IP}|g" \
-  /config/k3s-resources.yaml > /tmp/k3s-resources.yaml
-
-/bin/kubectl --kubeconfig "$client_config" apply -f /tmp/k3s-resources.yaml
+/bin/kubectl --kubeconfig "$client_config" apply -f /config/k3s-resources.yaml
 
 /bin/kubectl --kubeconfig "$client_config" \
   --namespace kube-system rollout status deployment/coredns --timeout=180s
