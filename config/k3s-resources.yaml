@@ -170,7 +170,7 @@ data:
         bind 127.0.0.1
         errors
         rewrite stop name regex ^(.+?)(\.[^.]+\.svc\.cluster\.local|\.svc\.cluster\.local|\.cluster\.local)\.$ {1} answer auto
-        forward . __AIRBYTE_K3S_IP__
+        forward . {$AIRBYTE_K3S_IP}
     }
 ---
 apiVersion: apps/v1
@@ -207,6 +207,11 @@ spec:
           image: rancher/mirrored-coredns-coredns:1.14.6
           imagePullPolicy: IfNotPresent
           args: [-conf, /etc/coredns/Corefile]
+          env:
+            - name: AIRBYTE_K3S_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           resources:
             limits:
               memory: 170Mi

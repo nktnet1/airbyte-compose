@@ -1,5 +1,5 @@
 .:53 {
-    bind {$AIRBYTE_K3S_IP}
+    bind eth0
     errors
     cache 30
     forward . 127.0.0.11
