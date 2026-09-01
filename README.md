@@ -1,7 +1,7 @@
 # Airbyte Compose
 
 With Airbyte's
-[deprecation of docker compose in favour of `abctl`](https://github.com/Dokploy/dokploy),
+[deprecation of docker compose in favour of `abctl`](https://docs.airbyte.com/platform/deploying-airbyte/migrating-from-docker-compose),
 there is no longer an easy way to
 selfhost it using PaaS services like
 [Coolify](https://github.com/coollabsio/coolify) or
