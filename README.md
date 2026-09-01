@@ -1,3 +1,8 @@
+<a href="https://github.com/airbytehq/airbyte"><img src="assets/airbyte.svg" alt="Airbyte" height="50"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://www.docker.com"><img src="assets/docker.svg" alt="Docker" height="50"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/docker/compose"><img src="assets/compose.webp" alt="Docker Compose" height="55"></a>
+<br>
+
 # Airbyte Compose
 
 With Airbyte's
@@ -40,11 +45,11 @@ can still be achieved.
 
 ### Templates
 
-- Coolify: https://github.com/coollabsio/coolify/pull/11568
-- Dokploy: https://github.com/Dokploy/templates/pull/1125
+- https://github.com/coollabsio/coolify/pull/11568
+- https://github.com/Dokploy/templates/pull/1125
 
 ### Discussions & Requests
 
-- Airbyte Deprecation: https://github.com/airbytehq/airbyte/discussions/40599
-- Coolify Request: https://github.com/coollabsio/coolify/discussions/2421
-- Dokploy Request: https://github.com/Dokploy/templates/issues/492
+- https://github.com/airbytehq/airbyte/discussions/40599
+- https://github.com/coollabsio/coolify/discussions/2421
+- https://github.com/Dokploy/templates/issues/492
